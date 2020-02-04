@@ -1,6 +1,6 @@
 # LearningTimeMeasurement
 Console program that counts time spent learning. This program works concurrently;
-while working user can type few commands: 
+while working user can type few commands:\n
 help - shows all commands
 start - program starts counting
 actual - shows actual statistics (e.g.: time spent learning this day, week, month etc.)
