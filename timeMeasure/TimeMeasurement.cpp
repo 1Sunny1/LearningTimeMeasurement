@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <sstream>
 
-TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) } {
+TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) }, tpStart(clock::now()) {
 	timeOfStart = std::make_unique<tm>(*gmtime(&timer));
 	date = makeDate();
 	strTime = makeStartTime();
@@ -16,14 +16,9 @@ TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) } {
 void TimeMeasurement::saveActualData() {
 	std::fstream file("data.txt");
 	if (!file.good())
-		std::cout << COULD_NOT_LOAD_FILE;
-	
-	else {
-		
-		//time of start and date
-		//passed time
-		std::cout << "\nvoid TimeMeasurement::saveActualData under development.\n";
-	}
+		std::cout << COULD_NOT_LOAD_FILE;	
+	else 
+		saveToFile(file);
 }
 
 std::string TimeMeasurement::manageUserInput() {
@@ -32,7 +27,7 @@ std::string TimeMeasurement::manageUserInput() {
 		std::cout << "\n>> ";
 		std::getline(std::cin, userInput);
 		std::transform(userInput.begin(), userInput.end(), userInput.begin(), ::toupper);
-		if (auto found = std::find_if(commands.begin(), commands.end(), [&userInput](const auto &value) { return userInput == value.second; }); found == commands.end())
+		if (auto found = std::find_if(commands.begin(), commands.end(), [&userInput](const auto &value) { return userInput == value.second; }); found == commands.end()) //if NOT found! pay attention!
 			std::cout << UNRECOGNISED_COMMAND;
 		else
 			break;
@@ -45,11 +40,13 @@ void TimeMeasurement::run() {
 	while (manager != "END") {
 		countTime();
 		manager = manageUserInput();
+	
 	}
+	saveActualData(); //if user types 'end' - not implemented yet;
 }
 
 void TimeMeasurement::countTime() {
-	std::cout << "\nvoid TimeMeasurement::countTime under development.\n";
+	std::cout << "Elapsed time: " << elapsed();
 }
 
 void TimeMeasurement::insertCommand(Commands command, const std::string &strCommand) {
@@ -79,4 +76,18 @@ std::string TimeMeasurement::makeStartTime() {
 
 void TimeMeasurement::printTimeOfStart() const {
 	std::cout << "Time of start: " << strTime;
+}
+
+double TimeMeasurement::elapsed() const {
+	return std::chrono::duration_cast<second>(clock::now() - tpStart).count();
+}
+
+void TimeMeasurement::reset() {
+	tpStart = clock::now();
+}
+
+void TimeMeasurement::saveToFile(std::fstream &file) {
+	file << "Date: " + date << '\n';
+	file << "Time of start: " + strTime << '\n';
+	file << "Passed time: " << elapsed() << '\n';
 }

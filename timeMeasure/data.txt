@@ -1,0 +1,4 @@
+Date: 2020-02-07
+Time of start: 17:48:39
+Passed time: 10.5021
+
