@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <sstream>
 
-TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) }, tpStart(clock::now()) {
+TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) }, tpStart{ clock::now() } {
 	timeOfStart = std::make_unique<tm>(*gmtime(&timer));
 	date = makeDate();
 	strTime = makeStartTime();
@@ -30,16 +30,16 @@ std::string TimeMeasurement::manageUserInput() {
 		if (auto found = std::find_if(commands.begin(), commands.end(), [&userInput](const auto &value) { return userInput == value.second; }); found == commands.end()) //if NOT found! pay attention!
 			std::cout << UNRECOGNISED_COMMAND;
 		else
-			break;
+			return userInput;
 	}
-	return userInput;
 }
 
 void TimeMeasurement::run() {
-	auto manager = manageUserInput();
-	while (manager != "END") {
+	auto managed = manageUserInput();
+
+	while (managed != "END") {
 		countTime();
-		manager = manageUserInput();
+		managed = manageUserInput();
 	
 	}
 	saveActualData(); //if user types 'end' - not implemented yet;
