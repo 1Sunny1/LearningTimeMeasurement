@@ -21,7 +21,7 @@ void TimeMeasurement::saveActualData() {
 		saveToFile(file);
 }
 
-std::string TimeMeasurement::manageUserInput() {
+TimeMeasurement::Commands TimeMeasurement::manageUserInput() {
 	std::string userInput;
 	while(true) {
 		std::cout << "\n>> ";
@@ -30,14 +30,14 @@ std::string TimeMeasurement::manageUserInput() {
 		if (auto found = std::find_if(commands.begin(), commands.end(), [&userInput](const auto &value) { return userInput == value.second; }); found == commands.end()) //if NOT found! pay attention!
 			std::cout << UNRECOGNISED_COMMAND;
 		else
-			return userInput;
+			return found->first;
 	}
 }
 
 void TimeMeasurement::run() {
 	auto managed = manageUserInput();
 
-	while (managed != "END") {
+	while (managed != Commands::END) {
 		countTime();
 		managed = manageUserInput();
 	

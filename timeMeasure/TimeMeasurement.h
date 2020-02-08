@@ -30,7 +30,7 @@ public:
 private:
 	void			saveActualData();
 	void			saveToFile(std::fstream &);
-	std::string		manageUserInput();
+	Commands		manageUserInput();
 	void			countTime();
 	void			insertCommand(Commands, const std::string &);
 	void			insertAllCommands();
