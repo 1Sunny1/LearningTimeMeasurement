@@ -35,22 +35,34 @@ TimeMeasurement::Commands TimeMeasurement::manageUserInput() {
 }
 
 void TimeMeasurement::run() {
-	auto managed = manageUserInput();
-
-	while (managed != Commands::END) {
-		countTime();
+	TimeMeasurement::Commands managed;
+	while (true) {
 		managed = manageUserInput();
-	
+		switch (managed) {
+		case Commands::START:    countTime();		     break;
+		case Commands::ACTUAL:   showPassedTime();       break;
+		case Commands::BREAK:    stopCountingTime();     break;
+		case Commands::CONTINUE: continueCountingTime(); break;
+		case Commands::END:      terminateApplication(); break;
+		case Commands::HELP:     showHelpDescription();  break;
+		}
 	}
-	saveActualData(); //if user types 'end' - not implemented yet;
 }
 
 void TimeMeasurement::countTime() {
+	std::cout << "countTime() under development!\n";
+}
+
+void TimeMeasurement::showPassedTime() const {
 	std::cout << "Elapsed time: " << elapsed();
 }
 
 void TimeMeasurement::insertCommand(Commands command, const std::string &strCommand) {
 	commands.insert(std::make_pair(command, strCommand));
+}
+
+void TimeMeasurement::showHelpDescription() const {
+	std::cout << "TimeMeasurement::showHelpDescription() under development!\n";
 }
 
 void TimeMeasurement::insertAllCommands() {
@@ -60,6 +72,20 @@ void TimeMeasurement::insertAllCommands() {
 	insertCommand(Commands::END,	  "END");
 	insertCommand(Commands::HELP,	  "HELP");
 	insertCommand(Commands::CONTINUE, "CONTINUE");
+}
+
+void TimeMeasurement::stopCountingTime() {
+	std::cout << "TimeMeasurement::stopCountingTime() under development!\n";
+}
+
+void TimeMeasurement::continueCountingTime() {
+	std::cout << "TimeMeasurement::continueCountingTime() under development!\n";
+}
+
+void TimeMeasurement::terminateApplication() {
+	std::cout << "TimeMeasurement::terminateApplication() under development!\n";
+	saveActualData();
+	exit(0);
 }
 
 std::string TimeMeasurement::makeDate() {

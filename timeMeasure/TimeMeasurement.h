@@ -26,17 +26,21 @@ public:
 	void		printTimeOfStart() const;
 	double		elapsed() const;
 	void		reset();
+	void		showPassedTime() const;
 
 private:
-	void			saveActualData();
-	void			saveToFile(std::fstream &);
-	Commands		manageUserInput();
-	void			countTime();
-	void			insertCommand(Commands, const std::string &);
-	void			insertAllCommands();
 	std::string		makeDate();
 	std::string		makeStartTime();
-	
+	Commands		manageUserInput();
+	void			saveToFile(std::fstream &);
+	void			insertCommand(Commands, const std::string &);
+	void			showHelpDescription() const;
+	void			saveActualData();
+	void			countTime();
+	void			insertAllCommands();
+	void			stopCountingTime();
+	void			continueCountingTime();
+	void			terminateApplication();
 
 private:
 	time_t												timer;
@@ -48,7 +52,6 @@ private:
 
 private:
 	const std::string									UNRECOGNISED_COMMAND{ "Unrecognized command. Please try again: " };
-	const std::string									COULD_NOT_LOAD_FILE{ "Couldn't load file!" };
-	
+	const std::string									COULD_NOT_LOAD_FILE{ "Couldn't load file!\n" };
 };
 #endif // !TIMEMEASUREMENT_H_
