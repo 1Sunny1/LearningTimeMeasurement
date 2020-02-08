@@ -1,4 +1,4 @@
-Date: 2020-02-07
-Time of start: 17:48:39
-Passed time: 10.5021
+Date: 2020-02-08
+Time of start: 12:26:42
+Passed time: 7.66728
 
