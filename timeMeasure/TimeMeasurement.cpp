@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <sstream>
 
-TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) }, tpStart{ clock::now() } {
+TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) } {
 	timeOfStart = std::make_unique<tm>(*gmtime(&timer));
 	date = makeDate();
 	strTime = makeStartTime();
@@ -50,6 +50,7 @@ void TimeMeasurement::run() {
 }
 
 void TimeMeasurement::countTime() {
+	tpStart = clock::now();
 	std::cout << "countTime() under development!\n";
 }
 
@@ -62,7 +63,10 @@ void TimeMeasurement::insertCommand(Commands command, const std::string &strComm
 }
 
 void TimeMeasurement::showHelpDescription() const {
-	std::cout << "TimeMeasurement::showHelpDescription() under development!\n";
+	std::cout << "\nThese are commands used in this program:\n\nstart - start counting time until stopped\n\n"
+		<< "actual - show actual statistics about time passed and time of start\n\nbreak - temporarily stops counting time"
+		<< " until continued\n\ncontinue - program continues counting time after a break\n\nend - stops counting, saves"
+		<< " results to file and terminates program\n\nhelp - shows all commands available (you are here)\n";
 }
 
 void TimeMeasurement::insertAllCommands() {
@@ -75,6 +79,7 @@ void TimeMeasurement::insertAllCommands() {
 }
 
 void TimeMeasurement::stopCountingTime() {
+
 	std::cout << "TimeMeasurement::stopCountingTime() under development!\n";
 }
 
@@ -83,7 +88,6 @@ void TimeMeasurement::continueCountingTime() {
 }
 
 void TimeMeasurement::terminateApplication() {
-	std::cout << "TimeMeasurement::terminateApplication() under development!\n";
 	saveActualData();
 	exit(0);
 }
