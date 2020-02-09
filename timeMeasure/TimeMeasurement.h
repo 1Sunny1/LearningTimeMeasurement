@@ -49,6 +49,7 @@ private:
 	std::string											date;
 	std::string											strTime;
 	std::chrono::time_point<clock>						tpStart;
+	std::vector<double>									vElapsedTimes;
 
 private:
 	const std::string									UNRECOGNISED_COMMAND{ "Unrecognized command. Please try again: " };

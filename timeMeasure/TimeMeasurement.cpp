@@ -4,12 +4,11 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <numeric>
 
 TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) } {
 	timeOfStart = std::make_unique<tm>(*gmtime(&timer));
 	date = makeDate();
-	strTime = makeStartTime();
-	printTimeOfStart();
 	insertAllCommands();
 }
 
@@ -36,6 +35,7 @@ TimeMeasurement::Commands TimeMeasurement::manageUserInput() {
 
 void TimeMeasurement::run() {
 	TimeMeasurement::Commands managed;
+	std::cout << "To begin, type \"start\" or \"help\"\n";
 	while (true) {
 		managed = manageUserInput();
 		switch (managed) {
@@ -50,12 +50,17 @@ void TimeMeasurement::run() {
 }
 
 void TimeMeasurement::countTime() {
-	tpStart = clock::now();
-	std::cout << "countTime() under development!\n";
+	std::cout << "Counting started.\n";
+	strTime = makeStartTime();
+	printTimeOfStart();
+	reset();
 }
 
 void TimeMeasurement::showPassedTime() const {
-	std::cout << "Elapsed time: " << elapsed();
+	const auto temporary = elapsed();
+	const auto total = std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) + elapsed();
+	std::cout << "actually elapsed time: " << temporary;
+	std::cout << "\ntotal elapsed time during program execute: " << total << '\n';
 }
 
 void TimeMeasurement::insertCommand(Commands command, const std::string &strCommand) {
@@ -79,15 +84,18 @@ void TimeMeasurement::insertAllCommands() {
 }
 
 void TimeMeasurement::stopCountingTime() {
-
-	std::cout << "TimeMeasurement::stopCountingTime() under development!\n";
+	std::cout << "Stopped counting time.\n";
+	vElapsedTimes.push_back(elapsed());
+	//there is no possibility to stop std::chrono from counting?!
 }
 
 void TimeMeasurement::continueCountingTime() {
-	std::cout << "TimeMeasurement::continueCountingTime() under development!\n";
+	std::cout << "Counting time again after a break.\n";
+	reset();
 }
 
 void TimeMeasurement::terminateApplication() {
+	vElapsedTimes.push_back(elapsed());
 	saveActualData();
 	exit(0);
 }
@@ -105,7 +113,7 @@ std::string TimeMeasurement::makeStartTime() {
 }
 
 void TimeMeasurement::printTimeOfStart() const {
-	std::cout << "Time of start: " << strTime;
+	std::cout << "\nTime of start: " << strTime;
 }
 
 double TimeMeasurement::elapsed() const {
@@ -119,5 +127,5 @@ void TimeMeasurement::reset() {
 void TimeMeasurement::saveToFile(std::fstream &file) {
 	file << "Date: " + date << '\n';
 	file << "Time of start: " + strTime << '\n';
-	file << "Passed time: " << elapsed() << '\n';
+	file << "Passed time: " << std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) << '\n';
 }
