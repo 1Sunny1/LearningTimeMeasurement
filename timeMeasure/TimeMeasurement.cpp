@@ -51,16 +51,21 @@ void TimeMeasurement::run() {
 
 void TimeMeasurement::countTime() {
 	std::cout << "Counting started.\n";
+	IS_STARTED = true;
 	strTime = makeStartTime();
 	printTimeOfStart();
 	reset();
 }
 
 void TimeMeasurement::showPassedTime() const {
-	const auto temporary = elapsed();
-	const auto total = std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) + elapsed();
-	std::cout << "actually elapsed time: " << temporary;
-	std::cout << "\ntotal elapsed time during program execute: " << total << '\n';
+	if (IS_STARTED) {
+		const auto temporary = elapsed();
+		const auto total = std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) + elapsed();
+		std::cout << "actually elapsed time: " << temporary;
+		std::cout << "\ntotal elapsed time during program execute: " << total << '\n';
+	}
+	else
+		std::cout << "Counting is not even started, you cannot show actual results.\n";
 }
 
 void TimeMeasurement::insertCommand(Commands command, const std::string &strCommand) {
@@ -84,18 +89,29 @@ void TimeMeasurement::insertAllCommands() {
 }
 
 void TimeMeasurement::stopCountingTime() {
-	std::cout << "Stopped counting time.\n";
-	vElapsedTimes.push_back(elapsed());
-	//there is no possibility to stop std::chrono from counting?!
+	if (IS_STARTED) {
+		std::cout << "Stopped counting time.\n";
+		vElapsedTimes.push_back(elapsed());
+		IS_BREAK = true;
+	}
+	else
+		std::cout << "You can't stop counting if it is not counting :D\n";
 }
 
 void TimeMeasurement::continueCountingTime() {
-	std::cout << "Counting time again after a break.\n";
-	reset();
+	if (IS_BREAK) {
+		std::cout << "Counting time again after a break.\n";
+		reset();
+		IS_BREAK = false;
+	}
+	else
+		std::cout << "You can't continue if there was no break!\n";
 }
 
 void TimeMeasurement::terminateApplication() {
-	vElapsedTimes.push_back(elapsed());
+	if (!IS_BREAK)
+		vElapsedTimes.push_back(elapsed());
+
 	saveActualData();
 	exit(0);
 }

@@ -54,5 +54,7 @@ private:
 private:
 	const std::string									UNRECOGNISED_COMMAND{ "Unrecognized command. Please try again: " };
 	const std::string									COULD_NOT_LOAD_FILE{ "Couldn't load file!\n" };
+	bool												IS_STARTED = false;
+	bool												IS_BREAK = false;
 };
 #endif // !TIMEMEASUREMENT_H_
