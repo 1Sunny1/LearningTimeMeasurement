@@ -1,7 +1,6 @@
 # LearningTimeMeasurement
 ## Console program that counts time spent on learning. <br />
 If you want to have some statistics about spending time on anyting you like; go on and use my code! :P <br />
-**Program works concurrently and when it is executed there is a possibility to enter user input** <br />
 **Here are commands that are currently implemented:** <br />
 - *Start* (start counting)<br />
 - *Actual* (show actual statistics)<br />
