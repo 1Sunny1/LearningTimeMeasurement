@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 #include <numeric>
+#include <math.h>
 
 TimeMeasurement::TimeMeasurement() noexcept : timer{ time(nullptr) } {
 	timeOfStart = std::make_unique<tm>(*gmtime(&timer));
@@ -23,7 +24,7 @@ void TimeMeasurement::saveActualData() {
 TimeMeasurement::Commands TimeMeasurement::manageUserInput() {
 	std::string userInput;
 	while(true) {
-		std::cout << "\n>> ";
+		std::cout << "\n\n>> ";
 		std::getline(std::cin, userInput);
 		std::transform(userInput.begin(), userInput.end(), userInput.begin(), ::toupper);
 		if (auto found = std::find_if(commands.begin(), commands.end(), [&userInput](const auto &value) { return userInput == value.second; }); found == commands.end()) //if NOT found! pay attention!
@@ -39,33 +40,44 @@ void TimeMeasurement::run() {
 	while (true) {
 		managed = manageUserInput();
 		switch (managed) {
-		case Commands::START:    countTime();		     break;
-		case Commands::ACTUAL:   showPassedTime();       break;
-		case Commands::BREAK:    stopCountingTime();     break;
-		case Commands::CONTINUE: continueCountingTime(); break;
-		case Commands::END:      terminateApplication(); break;
-		case Commands::HELP:     showHelpDescription();  break;
+		case Commands::START:    countTime();		       break;
+		case Commands::ACTUAL:   showPassedTime();         break;
+		case Commands::BREAK:    stopCountingTime();       break;
+		case Commands::CONTINUE: continueCountingTime();   break;
+		case Commands::END:      terminateApplication();   break;
+		case Commands::HELP:     showHelpDescription();    break;
 		}
 	}
 }
 
 void TimeMeasurement::countTime() {
-	std::cout << "Counting started.\n";
-	IS_STARTED = true;
-	strTime = makeStartTime();
-	printTimeOfStart();
-	reset();
-}
-
-void TimeMeasurement::showPassedTime() const {
-	if (IS_STARTED) {
-		const auto temporary = elapsed();
-		const auto total = std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) + elapsed();
-		std::cout << "actually elapsed time: " << temporary;
-		std::cout << "\ntotal elapsed time during program execute: " << total << '\n';
+	if (!IS_STARTED) {
+		std::cout << "Counting started\n";
+		IS_STARTED = true;
+		strTime = makeStartTime();
+		printTimeOfStart();
+		reset();
 	}
 	else
-		std::cout << "Counting is not even started, you cannot show actual results.\n";
+		std::cout << "Counting is already started\n";
+}
+
+void TimeMeasurement::showPassedTime() {
+	if (IS_STARTED && !IS_BREAK) {
+		const auto actual = std::floor(elapsed());
+		const auto total = std::floor(std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) + actual);
+		std::cout << "\ntime elapsed during this period: " << timeInHMS(actual) << '\n';
+		std::cout << "\ntotal elapsed time during program execute: " << timeInHMS(total) << '\n';
+	}
+
+	else if (IS_STARTED && IS_BREAK) {
+		const auto actual = elapsed_val;
+		const auto total = std::floor(std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0));
+		std::cout << "\ntime elapsed during previous period: " << timeInHMS(actual) << '\n';
+		std::cout << "\ntotal elapsed time during program execute: " << timeInHMS(total) << '\n';
+	}
+	else
+		std::cout << "Counting is not even started, you cannot show actual results\n";
 }
 
 void TimeMeasurement::insertCommand(Commands command, const std::string &strCommand) {
@@ -89,8 +101,9 @@ void TimeMeasurement::insertAllCommands() {
 }
 
 void TimeMeasurement::stopCountingTime() {
-	if (IS_STARTED) {
-		std::cout << "Stopped counting time.\n";
+	if (IS_STARTED && !IS_BREAK) {
+		elapsed_val = static_cast<int>(std::floor(elapsed()));
+		std::cout << "Stopped counting time\n";
 		vElapsedTimes.push_back(elapsed());
 		IS_BREAK = true;
 	}
@@ -100,7 +113,7 @@ void TimeMeasurement::stopCountingTime() {
 
 void TimeMeasurement::continueCountingTime() {
 	if (IS_BREAK) {
-		std::cout << "Counting time again after a break.\n";
+		std::cout << "Counting time again after a break\n";
 		reset();
 		IS_BREAK = false;
 	}
@@ -129,11 +142,20 @@ std::string TimeMeasurement::makeStartTime() {
 }
 
 void TimeMeasurement::printTimeOfStart() const {
-	std::cout << "\nTime of start: " << strTime;
+	std::cout << "\nTime of start: " << strTime << '\n';
 }
 
 double TimeMeasurement::elapsed() const {
 	return std::chrono::duration_cast<second>(clock::now() - tpStart).count();
+}
+
+std::string TimeMeasurement::timeInHMS(const double timeInSeconds) {
+	auto seconds = static_cast<int>(timeInSeconds);
+	auto minutes = seconds / 60;
+	seconds %= 60;
+	auto hours = minutes / 60;
+	minutes %= 60;
+	return std::to_string(hours) + "h " + std::to_string(minutes) + "m " + std::to_string(seconds) + "s";
 }
 
 void TimeMeasurement::reset() {
@@ -143,5 +165,5 @@ void TimeMeasurement::reset() {
 void TimeMeasurement::saveToFile(std::fstream &file) {
 	file << "Date: " + date << '\n';
 	file << "Time of start: " + strTime << '\n';
-	file << "Passed time: " << std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) << '\n';
+	file << "Passed time: " << std::accumulate(vElapsedTimes.begin(), vElapsedTimes.end(), 0.0) << "s\n";
 }
