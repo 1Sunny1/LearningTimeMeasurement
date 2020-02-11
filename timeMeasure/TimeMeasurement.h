@@ -48,10 +48,10 @@ private:
 	std::unique_ptr<tm>									timeOfStart;
 	std::unordered_map<Commands, std::string>			commands;
 	std::string											date;
-	std::string											strTime;
+	std::string											strStartTime;
 	std::chrono::time_point<clock>						tpStart;
 	std::vector<double>									vElapsedTimes;
-	int												elapsed_val;
+	int													elapsed_val;
 
 private:
 	const std::string									UNRECOGNISED_COMMAND{ "Unrecognized command. Please try again:\n" };
