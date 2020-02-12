@@ -32,7 +32,7 @@ private:
 	std::string				makeDate();
 	std::string				makeStartTime();
 	Commands				manageUserInput();
-	void					saveToFile(std::fstream &);
+	void					saveToFile(std::ofstream &);
 	void					insertCommand(Commands, const std::string &);
 	void					showHelpDescription() const;
 	void					saveActualData();

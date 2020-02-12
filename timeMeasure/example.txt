@@ -1,0 +1,3 @@
+Date: 2020-02-12
+Time of start: 09:55:24
+Passed time: 0h 0m 5s

@@ -14,9 +14,11 @@ date{ makeDate() } {
 }
 
 void TimeMeasurement::saveActualData() {
-	std::fstream file("data.txt");
-	if (!file.good())
+	std::ofstream file("example.txt", std::ofstream::out | std::ofstream::ate);
+	if (!file.good()) {
 		std::cout << COULD_NOT_LOAD_FILE;
+		getchar();
+	}
 	else
 		saveToFile(file);
 }
@@ -189,7 +191,7 @@ void TimeMeasurement::reset() {
 	tpStart = clock::now();
 }
 
-void TimeMeasurement::saveToFile(std::fstream& file) {
+void TimeMeasurement::saveToFile(std::ofstream& file) {
 	file << "Date: " + date << '\n';
 	file << "Time of start: " + strStartTime << '\n';
 	file << "Passed time: "
